@@ -319,7 +319,7 @@ const moonCatDataModule = {
   actions: {
     async loadOSData(context) {
       logInfo("moonCatDataModule", "actions.loadOSData()");
-      const PAGESIZE = 50; // Default 20, max 50
+      const PAGESIZE = 2; // Default 20, max 50
       const DELAY = 1000; // Millis
       this.assets = [];
       const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -334,7 +334,7 @@ const moonCatDataModule = {
         if (data.assets && data.assets.length > 0) {
           for (let assetIndex = 0; assetIndex < data.assets.length; assetIndex++) {
             const asset = data.assets[assetIndex];
-            // logInfo("moonCatDataModule", "loadAssets() asset(" + (parseInt(offset) + assetIndex) + ") name: " + asset.collection.name + ", slug: " + asset.collection.slug);
+            logInfo("moonCatDataModule", "loadAssets() asset(" + (parseInt(offset) + assetIndex) + ") name: " + asset.collection.name + ", slug: " + asset.collection.slug);
             this.assets.push(asset);
           }
         } else {
