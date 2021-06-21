@@ -8,24 +8,11 @@ const OUTPUTDATAJSON = "slumdoge.json";
 
 console.log("Reading data from '" + INPUTDATAFILE + "' ...");
 
-// async function doit() {
-//   const url = "https://slumdoge.s3.ap-southeast-2.amazonaws.com/0";
-//   const data = await fetch(url).then(response => response.json());
-//   console.log(JSON.stringify(data, null, 2));
-// }
-//
-// doit();
-
 let records = [];
-
 for (let i = 0; i < 9999; i++) {
   var data = JSON.parse(fs.readFileSync(INPUTDATADIR + i + ".json", "utf8"));
-  // data.delete("description");
-  // console.log(data.description);
-  // data.delete("external_url");
   records.push({ image: data.image, name: data.name, attributes: data.attributes });
 }
-// console.log(JSON.stringify(records, null, 2));
 
 (async () => {
   await fs.writeFile(OUTPUTDATAJS, "const SLUMDOGEDATA=" + JSON.stringify(records, null, 2) + ";", (err) => {
