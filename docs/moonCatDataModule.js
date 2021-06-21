@@ -317,6 +317,65 @@ const moonCatDataModule = {
     async loadMoonCatData(context) {
       logInfo("moonCatDataModule", "actions.loadMoonCatData()");
 
+      function createCORSRequest(method, url) {
+        var xhr = new XMLHttpRequest();
+        if ("withCredentials" in xhr) {
+          // Check if the XMLHttpRequest object has a "withCredentials" property.
+          // "withCredentials" only exists on XMLHTTPRequest2 objects.
+          xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+          // Otherwise, check if XDomainRequest.
+          // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
+          xhr = new XDomainRequest();
+          xhr.open(method, url);
+        } else {
+          // Otherwise, CORS is not supported by the browser.
+          xhr = null;
+        }
+        return xhr;
+      }
+
+      const url = "https://slumdoge.s3.ap-southeast-2.amazonaws.com/0";
+      var request = createCORSRequest('GET', url);
+      if (!request) {
+        throw new Error('CORS not supported');
+      }
+
+      //
+      // request = new XMLHttpRequest();
+      request.overrideMimeType("application/json");
+      request.open('GET', url, true);
+      request.onload  = function() {
+        if (request.readyState == 4) {
+      //     // const pixelPortraitsDataListTemp = [];
+      //     const data = JSON.parse(request.responseText);
+      //     console.log(data);
+      //     // for (let assetIndex in Object.keys(openSeaPixelPortraitData.assets)) {
+      //     //   const asset = openSeaPixelPortraitData.assets[assetIndex];
+      //     //   var id = asset.name;
+      //     //   var imageUrl = asset.image_url;
+      //     //   logInfo("beeefLibraryOfBestQualityNFTs", "loadNFTs() openSeaPixelPortraitsData id: " + id + " => " + imageUrl);
+      //     //   pixelPortraitsDataListTemp.push({ id: id, imageUrl: imageUrl });
+      //     // }
+      //     // t.pixelPortraitsDataList = pixelPortraitsDataListTemp;
+      //     // t.pixelPortraitsDataList.sort(function(a, b) { return ('' + a.id).localeCompare(b.id) });
+        }
+      };
+      request.send(null);
+
+
+      // const data = await fetch(url).then(response => response.json());
+      // console.log(JSON.stringify(data, null, 2));
+
+      // if (data.assets && data.assets.length > 0) {
+      //   for (let assetIndex = 0; assetIndex < data.assets.length; assetIndex++) {
+      //     const asset = data.assets[assetIndex];
+      //     // logInfo("beeefLibraryOfBestQualityNFTs", "loadAssets() asset(" + (parseInt(offset) + assetIndex) + ") name: " + asset.collection.name + ", slug: " + asset.collection.slug);
+      //     this.assets.push(asset);
+      //   }
+      // } else {
+
+
       var db0 = new Dexie("MoonCatDB");
       db0.version(1).stores({
         apiData: '&rescueIndex,catId,timestamp'
