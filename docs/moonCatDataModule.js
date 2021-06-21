@@ -327,13 +327,14 @@ const moonCatDataModule = {
       const delay = ms => new Promise(res => setTimeout(res, ms));
       const timestamp = parseInt(new Date() / 1000);
 
-      for (let i = 0; i < CATIDS.length && i < 2; i += chunkSize) {
-        const slice = CATIDS.slice(i, i + chunkSize);
+      // for (let i = 0; i < CATIDS.length && i < 2; i += chunkSize) {
+        // const slice = CATIDS.slice(i, i + chunkSize);
         // logDebug("NFTPostcard", "loadCatData() slice: " + JSON.stringify(slice));
+        const slice = [0, 1, 2, 3, 4];
         try {
 
           // logDebug("NFTPostcard", "loadCatData() url: " + "https://api.mooncat.community/traits/" + catId);
-          const requests = slice.map((catId) => fetch("https://api.mooncat.community/traits/" + catId));
+          const requests = slice.map((catId) => fetch("https://slumdoge.s3.ap-southeast-2.amazonaws.com/" + catId, { mode: 'cors'}));
           // logDebug("NFTPostcard", "loadCatData() url: " + "https://api.mooncat.community/contract-details/" + catId);
           // const requests = slice.map((catId) => fetch("https://api.mooncat.community/contract-details/" + catId));
           const responses = await Promise.all(requests);
@@ -346,13 +347,16 @@ const moonCatDataModule = {
           const t = this;
           const records = [];
           data.forEach((datum) => {
-            records.push({ rescueIndex: datum.details.rescueIndex, catId: datum.details.catId, data: datum, timestamp: timestamp });
-            console.log(JSON.stringify(records[records.length - 1], null, 2));
+            console.log(JSON.stringify(datum, null, 2));
+            // records.push({ rescueIndex: datum.details.rescueIndex, catId: datum.details.catId, data: datum, timestamp: timestamp });
+            // console.log(JSON.stringify(records[records.length - 1], null, 2));
             // Vue.set(t.traitData, datum.details.catId, datum);
             // logDebug("NFTPostcard", "loadCatData() rescueIndex: " + datum.details.rescueIndex);
             // logDebug("NFTPostcard", "loadCatData() datum: " + JSON.stringify(datum, null, 2));
             // logDebug("NFTPostcard", "loadCatData() datum: " + JSON.stringify(t.traitData[datum.details.rescueIndex], null, 2));
           });
+
+          if (false) {
           await db0.apiData.bulkPut(records).then (function(){
             return db0.apiData.get(3);
           }).then(function (item) {
@@ -360,18 +364,16 @@ const moonCatDataModule = {
           }).catch(function(error) {
              logError("moonCatDataModule", "loadMoonCatData() - error: " + error);
           });
-
           const data1 = await db0.apiData.toArray();
           logDebug("moonCatDataModule", "loadMoonCatData() Dexie - data1: " + JSON.stringify(data1));
-
-        }
-        catch (errors) {
+          }
+        } catch (errors) {
           console.table(errors);
           // logError("NFTPostcard", "loadCatData() errors: " + JSON.stringify(errors, null, 2));
           // errors.forEach((error) => console.error(error));
         }
         await delay(DELAY);
-      }
+      // }
 
       // await db0.apiData.bulkPut([
       //   {rescueIndex: 0, catId: "0x12345678", timestamp: 1},
