@@ -9,6 +9,8 @@ const NFTPostcard = {
 
               <!-- <b-button @click="loadCatData">Load Cat Data</b-button> -->
 
+              {{ slumDogeTraits }}
+
               <b-card-group deck class="m-0">
                 <div v-for="(slumDoge, slumDogeIndex) in slumDogeData.slice(0, 36)">
                   <b-card body-class="p-3 d-flex align-items-end justify-content-center" img-bottom img-center header-class="p-2" footer-class="p-2" style="width: 10rem; height: 14rem;" img-top class="m-1 p-0 text-center text-bottom position-relative">
@@ -17,7 +19,7 @@ const NFTPostcard = {
                         {{ getHeader(slumDoge, slumDogeIndex) }}
                       </span>
                     </template>
-                    <img width="100%" :src="slumDoge.image" />
+                    <b-img-lazy width="100%" :src="slumDoge.image" />
                     <!--
                     <template #footer>
                       {{ getFooter(slumDoge, rescueIndex) }}
@@ -26,7 +28,6 @@ const NFTPostcard = {
                   </b-card>
                 </div>
               </b-card-group>
-
 
               <b-card-group deck class="m-0">
                 <!-- <div v-for="(catId, rescueIndex) in catIds.slice(0, 36)"> -->
@@ -430,6 +431,39 @@ const NFTPostcard = {
   computed: {
     slumDogeData() {
       return SLUMDOGEDATA;
+    },
+    slumDogeTraitData() {
+      // return SLUMDOGEDATA.slice(0, 1);
+      const results = [];
+      const groups = {};
+      for (let slumdogeIndex in SLUMDOGEDATA.slice(0, 10000)) {
+        const data = SLUMDOGEDATA[slumdogeIndex];
+        const attributeCount = data.attributes.length;
+        data.attributes.push({ trait_type: "#Attributes", value: attributeCount });
+        // console.log(attributeCount + ": " + JSON.stringify(data, null, 2));
+        for (let attributeIndex in data.attributes) {
+          const attribute = data.attributes[attributeIndex];
+          const trait_type = attribute.trait_type;
+          const value = attribute.value;
+          // console.log(data.name + ": " + trait_type + " => " + value);
+          if (!groups[trait_type]) {
+            groups[trait_type] = {};
+          }
+          if (!groups[trait_type][value]) {
+            groups[trait_type][value] = true;
+          }
+        }
+      }
+      // console.table(groups);
+
+      // results.push({ value: '--- (all) ---', text: '--- (all) ---'});
+      // results.sort(function(a, b) {
+      //   return ('' + a.value).localeCompare(b.value);
+      // });
+      return groups;
+    },
+    slumDogeTraits() {
+      return Object.keys(this.slumDogeTraitData).sort();
     },
     traitDataKeys() {
       // console.log(JSON.stringify(Object.keys(this.traitData)));
