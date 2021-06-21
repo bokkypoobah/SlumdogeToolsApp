@@ -433,14 +433,11 @@ const NFTPostcard = {
       return SLUMDOGEDATA;
     },
     slumDogeTraitData() {
-      // return SLUMDOGEDATA.slice(0, 1);
-      const results = [];
       const groups = {};
       for (let slumdogeIndex in SLUMDOGEDATA.slice(0, 10000)) {
         const data = SLUMDOGEDATA[slumdogeIndex];
         const attributeCount = data.attributes.length;
         data.attributes.push({ trait_type: "#Attributes", value: attributeCount });
-        // console.log(attributeCount + ": " + JSON.stringify(data, null, 2));
         for (let attributeIndex in data.attributes) {
           const attribute = data.attributes[attributeIndex];
           const trait_type = attribute.trait_type;
@@ -454,12 +451,6 @@ const NFTPostcard = {
           }
         }
       }
-      // console.table(groups);
-
-      // results.push({ value: '--- (all) ---', text: '--- (all) ---'});
-      // results.sort(function(a, b) {
-      //   return ('' + a.value).localeCompare(b.value);
-      // });
       return groups;
     },
     slumDogeTraits() {

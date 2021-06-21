@@ -319,6 +319,30 @@ const moonCatDataModule = {
   actions: {
     async loadOSData(context) {
       logInfo("moonCatDataModule", "actions.loadOSData()");
+      const PAGESIZE = 50; // Default 20, max 50
+      const DELAY = 1000; // Millis
+      this.assets = [];
+      const delay = ms => new Promise(res => setTimeout(res, ms));
+      await delay(DELAY);
+      let completed = false;
+      let page = 0;
+      while (!completed && page < 2) {
+        const offset = PAGESIZE * page;
+        const url = "https://api.opensea.io/api/v1/assets?&asset_contract_address=" + SLUMDOGEADDRESS + "&order_direction=desc&offset=0&limit=50";
+        logInfo("moonCatDataModule", "loadAssets() url:" + url);
+        const data = await fetch(url).then(response => response.json());
+        if (data.assets && data.assets.length > 0) {
+          for (let assetIndex = 0; assetIndex < data.assets.length; assetIndex++) {
+            const asset = data.assets[assetIndex];
+            // logInfo("moonCatDataModule", "loadAssets() asset(" + (parseInt(offset) + assetIndex) + ") name: " + asset.collection.name + ", slug: " + asset.collection.slug);
+            this.assets.push(asset);
+          }
+        } else {
+          completed = true;
+        }
+        page++;
+        await delay(DELAY);
+      }
 
       // function createCORSRequest(method, url) {
       //   var xhr = new XMLHttpRequest();
