@@ -3,7 +3,8 @@ const util = require('util');
 
 const INPUTDATADIR = "raw/";
 const INPUTDATAFILE = "docs/config.json";
-const OUTPUTDATAFILE = "slumdoge.js";
+const OUTPUTDATAJS = "slumdoge.js";
+const OUTPUTDATAJSON = "slumdoge.json";
 
 console.log("Reading data from '" + INPUTDATAFILE + "' ...");
 
@@ -27,9 +28,15 @@ for (let i = 0; i < 9999; i++) {
 // console.log(JSON.stringify(records, null, 2));
 
 (async () => {
-  await fs.writeFile(OUTPUTDATAFILE, "const SLUMDOGEDATA=" + JSON.stringify(records, null, 2) + ";", (err) => {
+  await fs.writeFile(OUTPUTDATAJS, "const SLUMDOGEDATA=" + JSON.stringify(records, null, 2) + ";", (err) => {
       if (err) throw err;
-      console.log('Data written to file: ' + OUTPUTDATAFILE);
+      console.log('Data written to file: ' + OUTPUTDATAJS);
+  });
+})();
+(async () => {
+  await fs.writeFile(OUTPUTDATAJSON, JSON.stringify(records, null, 2), (err) => {
+      if (err) throw err;
+      console.log('Data written to file: ' + OUTPUTDATAJSON);
   });
 })();
 
