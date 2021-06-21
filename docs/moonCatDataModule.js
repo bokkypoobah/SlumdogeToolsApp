@@ -334,7 +334,7 @@ const moonCatDataModule = {
         try {
 
           // logDebug("NFTPostcard", "loadCatData() url: " + "https://api.mooncat.community/traits/" + catId);
-          const requests = slice.map((catId) => fetch("https://slumdoge.s3.ap-southeast-2.amazonaws.com/" + catId, { mode: 'cors'}));
+          const requests = slice.map((catId) => fetch("https://slumdoge.s3.ap-southeast-2.amazonaws.com/" + catId, { mode: 'no-cors'}));
           // logDebug("NFTPostcard", "loadCatData() url: " + "https://api.mooncat.community/contract-details/" + catId);
           // const requests = slice.map((catId) => fetch("https://api.mooncat.community/contract-details/" + catId));
           const responses = await Promise.all(requests);
