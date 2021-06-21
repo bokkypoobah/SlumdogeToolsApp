@@ -319,94 +319,62 @@ const moonCatDataModule = {
   actions: {
     async loadOSData(context) {
       logInfo("moonCatDataModule", "actions.loadOSData()");
-      const PAGESIZE = 2; // Default 20, max 50
+      const PAGESIZE = 50; // Default 20, max 50
       const DELAY = 1000; // Millis
       this.assets = [];
+      const timestamp = parseInt(new Date() / 1000);
       const delay = ms => new Promise(res => setTimeout(res, ms));
       await delay(DELAY);
       let completed = false;
       let page = 0;
-      while (!completed && page < 2) {
+
+      var db0 = new Dexie("MoonCatDB");
+      db0.version(1).stores({
+        apiData: '&tokenId,owner,timestamp'
+      });
+      // const data0 = await db0.apiData.toArray();
+      // logInfo("moonCatDataModule", "loadOSData() Dexie - data0: " + JSON.stringify(data0));
+
+      while (!completed) {
         const offset = PAGESIZE * page;
-        const url = "https://api.opensea.io/api/v1/assets?&asset_contract_address=" + SLUMDOGEADDRESS + "&order_direction=desc&offset=0&limit=50";
+        // "&token_ids=6714" +
+        const url = "https://api.opensea.io/api/v1/assets?&asset_contract_address=" + SLUMDOGEADDRESS + "&order_direction=desc&offset=" + offset + "&limit=" + PAGESIZE;
         logInfo("moonCatDataModule", "loadAssets() url:" + url);
         const data = await fetch(url).then(response => response.json());
+        logInfo("moonCatDataModule", "loadAssets() assets:" + data.assets.length);
+        const records = [];
         if (data.assets && data.assets.length > 0) {
           for (let assetIndex = 0; assetIndex < data.assets.length; assetIndex++) {
             const asset = data.assets[assetIndex];
-            logInfo("moonCatDataModule", "loadAssets() asset(" + (parseInt(offset) + assetIndex) + ") name: " + asset.collection.name + ", slug: " + asset.collection.slug);
+            // logInfo("moonCatDataModule", "loadAssets() asset(" + (parseInt(offset) + assetIndex) + ") name: " + asset.collection.name + ", slug: " + asset.collection.slug);
+            // console.log(JSON.stringify(asset, null, 2));
             this.assets.push(asset);
+            records.push({
+              tokenId: asset.token_id,
+              owner: asset.owner.address,
+              timestamp: timestamp,
+              imageUrl: asset.image_url,
+              permalink: asset.permalink,
+            });
           }
         } else {
           completed = true;
         }
+        // console.log(JSON.stringify(records, null, 2));
+        await db0.apiData.bulkPut(records).then (function(){
+        //   return db0.apiData.get(records[0].tokenId);
+        // }).then(function (item) {
+          // logDebug("moonCatDataModule", "loadOSData() - timestamp: " + item.timestamp);
+        }).catch(function(error) {
+           logError("moonCatDataModule", "loadOSData() - error: " + error);
+        });
+
+        // const data1 = await db0.apiData.toArray();
+        // logInfo("moonCatDataModule", "loadOSData() Dexie - data1: " + JSON.stringify(data1));
+
         page++;
         await delay(DELAY);
       }
-
-      // function createCORSRequest(method, url) {
-      //   var xhr = new XMLHttpRequest();
-      //   if ("withCredentials" in xhr) {
-      //     // Check if the XMLHttpRequest object has a "withCredentials" property.
-      //     // "withCredentials" only exists on XMLHTTPRequest2 objects.
-      //     xhr.open(method, url, true);
-      //   } else if (typeof XDomainRequest != "undefined") {
-      //     // Otherwise, check if XDomainRequest.
-      //     // XDomainRequest only exists in IE, and is IE's way of making CORS requests.
-      //     xhr = new XDomainRequest();
-      //     xhr.open(method, url);
-      //   } else {
-      //     // Otherwise, CORS is not supported by the browser.
-      //     xhr = null;
-      //   }
-      //   return xhr;
-      // }
-      //
-      // const url = "https://slumdoge.s3.ap-southeast-2.amazonaws.com/0";
-      // var request = createCORSRequest('GET', url);
-      // if (!request) {
-      //   throw new Error('CORS not supported');
-      // }
-      //
-      // //
-      // // request = new XMLHttpRequest();
-      // request.overrideMimeType("application/json");
-      // request.open('GET', url, true);
-      // request.onload  = function() {
-      //   if (request.readyState == 4) {
-      // //     // const pixelPortraitsDataListTemp = [];
-      // //     const data = JSON.parse(request.responseText);
-      // //     console.log(data);
-      // //     // for (let assetIndex in Object.keys(openSeaPixelPortraitData.assets)) {
-      // //     //   const asset = openSeaPixelPortraitData.assets[assetIndex];
-      // //     //   var id = asset.name;
-      // //     //   var imageUrl = asset.image_url;
-      // //     //   logInfo("beeefLibraryOfBestQualityNFTs", "loadNFTs() openSeaPixelPortraitsData id: " + id + " => " + imageUrl);
-      // //     //   pixelPortraitsDataListTemp.push({ id: id, imageUrl: imageUrl });
-      // //     // }
-      // //     // t.pixelPortraitsDataList = pixelPortraitsDataListTemp;
-      // //     // t.pixelPortraitsDataList.sort(function(a, b) { return ('' + a.id).localeCompare(b.id) });
-      //   }
-      // };
-      // request.send(null);
-
-
-      // const data = await fetch(url).then(response => response.json());
-      // console.log(JSON.stringify(data, null, 2));
-
-      // if (data.assets && data.assets.length > 0) {
-      //   for (let assetIndex = 0; assetIndex < data.assets.length; assetIndex++) {
-      //     const asset = data.assets[assetIndex];
-      //     // logInfo("beeefLibraryOfBestQualityNFTs", "loadAssets() asset(" + (parseInt(offset) + assetIndex) + ") name: " + asset.collection.name + ", slug: " + asset.collection.slug);
-      //     this.assets.push(asset);
-      //   }
-      // } else {
-
-
-      var db0 = new Dexie("MoonCatDB");
-      db0.version(1).stores({
-        apiData: '&rescueIndex,catId,timestamp'
-      });
 
       if (false) {
       const chunkSize = 5; // 500
