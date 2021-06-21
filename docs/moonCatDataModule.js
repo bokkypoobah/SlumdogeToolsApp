@@ -6,7 +6,7 @@ const MoonCatData = {
           Please switch to the Ethereum mainnet in MetaMask and refresh this page
         </b-card-text>
       </b-card>
-      MoonCatDataModule
+      Total {{ slumDogeData.length }} Slumdoges
       <!--
       <b-button v-b-toggle.contracts size="sm" block variant="outline-info">Contracts</b-button>
       <b-collapse id="contracts" visible class="mt-2">
@@ -54,6 +54,9 @@ const MoonCatData = {
     },
     coinbase() {
       return store.getters['connection/coinbase'];
+    },
+    slumDogeData() {
+      return SLUMDOGEDATA;
     },
     // collections() {
     //   return store.getters['tokens/collections'];

@@ -10,6 +10,25 @@ const NFTPostcard = {
               <!-- <b-button @click="loadCatData">Load Cat Data</b-button> -->
 
               <b-card-group deck class="m-0">
+                <div v-for="(slumDoge, slumDogeIndex) in slumDogeData.slice(0, 36)">
+                  <b-card body-class="p-3 d-flex align-items-end justify-content-center" img-bottom img-center header-class="p-2" footer-class="p-2" style="width: 10rem; height: 14rem;" img-top class="m-1 p-0 text-center text-bottom position-relative">
+                    <template #header>
+                      <span variant="secondary" class="small truncate">
+                        {{ getHeader(slumDoge, slumDogeIndex) }}
+                      </span>
+                    </template>
+                    <img width="100%" :src="slumDoge.image" />
+                    <!--
+                    <template #footer>
+                      {{ getFooter(slumDoge, rescueIndex) }}
+                    </template>
+                    -->
+                  </b-card>
+                </div>
+              </b-card-group>
+
+
+              <b-card-group deck class="m-0">
                 <!-- <div v-for="(catId, rescueIndex) in catIds.slice(0, 36)"> -->
                 <div v-for="(catId, rescueIndex) in traitDataKeys">
                   <!-- center -->
@@ -409,9 +428,12 @@ const NFTPostcard = {
     }
   },
   computed: {
+    slumDogeData() {
+      return SLUMDOGEDATA;
+    },
     traitDataKeys() {
       // console.log(JSON.stringify(Object.keys(this.traitData)));
-      return Object.keys(this.traitData);
+      return []; // Object.keys(this.traitData);
     },
     catIds() {
       return CATIDS;
@@ -520,15 +542,25 @@ const NFTPostcard = {
   },
   methods: {
 
-    getHeader(catId, rescueIndex) {
-      const traitData = this.traitData[catId];
-      if (traitData) {
-        return traitData.name;
-      } else {
-        return "(loading)";
-      }
-      // return rescueIndex + ':' + catId; // CATIDS[rescueIndex];
+    getHeader(slumdoge, slumdogeIndex) {
+      // const traitData = this.traitData[slumdoge];
+      // if (traitData) {
+      //   return traitData.name;
+      // } else {
+      //   return "(loading)";
+      // }
+      return slumdoge.name;
+      // return slumdogeIndex + ':' + catId; // CATIDS[slumdogeIndex];
     },
+    // getHeader(catId, rescueIndex) {
+    //   const traitData = this.traitData[catId];
+    //   if (traitData) {
+    //     return traitData.name;
+    //   } else {
+    //     return "(loading)";
+    //   }
+    //   // return rescueIndex + ':' + catId; // CATIDS[rescueIndex];
+    // },
     getHover(catId, rescueIndex) {
       return "Hover: " + rescueIndex;
     },
