@@ -320,7 +320,7 @@ const moonCatDataModule = {
     async loadOSData(context) {
       logInfo("moonCatDataModule", "actions.loadOSData()");
       const PAGESIZE = 50; // Default 20, max 50
-      const DELAY = 1000; // Millis
+      const DELAY = 2000; // Millis
       this.assets = [];
       const timestamp = parseInt(new Date() / 1000);
       const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -348,6 +348,19 @@ const moonCatDataModule = {
             const asset = data.assets[assetIndex];
             // logInfo("moonCatDataModule", "loadAssets() asset(" + (parseInt(offset) + assetIndex) + ") name: " + asset.collection.name + ", slug: " + asset.collection.slug);
             // console.log(JSON.stringify(asset, null, 2));
+            let sellPrice = null;
+            let sellToken = null;
+            if (asset.sell_orders && asset.sell_orders.length > 0) {
+              sellPrice = asset.sell_orders[0].current_price;
+              sellToken = asset.sell_orders[0].payment_token_contract.symbol;
+            }
+            let lastSalePrice = null;
+            let lastSaleToken = null;
+            if (asset.last_sale) {
+              lastSalePrice = asset.last_sale.total_price;
+              lastSaleToken = asset.last_sale.payment_token.symbol;
+            }
+
             this.assets.push(asset);
             records.push({
               tokenId: asset.token_id,
@@ -355,6 +368,10 @@ const moonCatDataModule = {
               timestamp: timestamp,
               imageUrl: asset.image_url,
               permalink: asset.permalink,
+              sellPrice: sellPrice,
+              sellToken: sellToken,
+              lastSalePrice: lastSalePrice,
+              lastSaleToken: lastSaleToken,
             });
           }
         } else {
