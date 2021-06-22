@@ -2,4 +2,5 @@
 .project
 .settings
 scripts/raw/*.json
+scripts/osraw/*.json
 private

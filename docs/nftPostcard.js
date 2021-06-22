@@ -12,14 +12,15 @@ const NFTPostcard = {
               {{ slumDogeTraits }}
 
               <b-card-group deck class="m-0">
-                <div v-for="(slumDoge, slumDogeIndex) in slumDogeData.slice(0, 36)">
+                <div v-for="(slumDoge, slumDogeIndex) in slumdogeData.slice(0, 10000)">
                   <b-card body-class="p-3 d-flex align-items-end justify-content-center" img-bottom img-center header-class="p-2" footer-class="p-2" style="width: 10rem; height: 14rem;" img-top class="m-1 p-0 text-center text-bottom position-relative">
                     <template #header>
                       <span variant="secondary" class="small truncate">
                         {{ getHeader(slumDoge, slumDogeIndex) }}
                       </span>
                     </template>
-                    <b-img-lazy width="100%" :src="slumDoge.image" />
+                    <!-- <b-img-lazy width="100%" :src="slumDoge.image" /> -->
+                    <b-img-lazy width="100%" :src="slumdogeImageData[slumDogeIndex]" />
                     <!--
                     <template #footer>
                       {{ getFooter(slumDoge, rescueIndex) }}
@@ -429,10 +430,13 @@ const NFTPostcard = {
     }
   },
   computed: {
-    slumDogeData() {
+    slumdogeData() {
       return SLUMDOGEDATA;
     },
-    slumDogeTraitData() {
+    slumdogeImageData() {
+      return SLUMDOGEIMAGEDATA;
+    },
+    slumdogeTraitData() {
       const groups = {};
       for (let slumdogeIndex in SLUMDOGEDATA.slice(0, 10000)) {
         const data = SLUMDOGEDATA[slumdogeIndex];
@@ -454,7 +458,7 @@ const NFTPostcard = {
       return groups;
     },
     slumDogeTraits() {
-      return Object.keys(this.slumDogeTraitData).sort();
+      return Object.keys(this.slumdogeTraitData).sort();
     },
     traitDataKeys() {
       // console.log(JSON.stringify(Object.keys(this.traitData)));
